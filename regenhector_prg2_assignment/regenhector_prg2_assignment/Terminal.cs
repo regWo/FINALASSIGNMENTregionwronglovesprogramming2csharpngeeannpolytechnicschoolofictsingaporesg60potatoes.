@@ -1,56 +1,82 @@
-﻿namespace regenhector_prg2_assignment;
-
-public class Terminal
+﻿namespace regenhector_prg2_assignment
 {
-    //attributes
-    public string TerminalName { get; set; }
-    public Dictionary<string, Airline> Airlines { get; set; } = new Dictionary<string, Airline>();
-    public Dictionary<string, Flight> Flights { get; set; } = new Dictionary<string, Flight>();
-    public Dictionary<string, BoardingGate> BoardingGates { get; set; } = new Dictionary<string, BoardingGate>();
-    public Dictionary<string, double> GateFees { get; set; } = new Dictionary<string, double>();
-
-    //constructors
-    public Terminal() {}
-
-    public Terminal(string tn, Dictionary<string, Airline> al, Dictionary<string, Flight> fl,
-        Dictionary<string, BoardingGate> bg, Dictionary<string, double> gf)
+    public class Terminal
     {
-        TerminalName = tn;
-        Airlines = al;
-        Flights = fl;
-        BoardingGates = bg;
-        GateFees = gf;
-    }
+        //attributes
+        public string TerminalName { get; set; }
+        //VERY IMPORTANT KEY FOR AIRLINES IS THE AIRLINE CODE NOT AIRLINE NAME
+        public Dictionary<string, Airline> Airlines { get; set; } = new Dictionary<string, Airline>();
+        public Dictionary<string, Flight> Flights { get; set; } = new Dictionary<string, Flight>();
+        public Dictionary<string, BoardingGate> BoardingGates { get; set; } = new Dictionary<string, BoardingGate>();
 
-    //methods
-    public bool AddAirline(Airline addA)
-    {
-        //ok note to self check if
-        //nvm i have no clue
-        return false;
-    }
+        //i have no clue what this is used for
+        public Dictionary<string, double> GateFees { get; set; } = new Dictionary<string, double>();
 
-    public bool AddBoardingGate(BoardingGate addBg)
-    {
-        //why does it return a bool???????
-        return false;
-    }
+        //constructors
+        public Terminal() { }
 
-    public Airline GetAirlineFromFlight(Flight flightA)
-    {
-        //ok so flightA.FlightNumber get the first two letters
-        //then return Airlines[first two letters]
-    }
+        public Terminal(string tn)
+        {
+            TerminalName = tn;
+        }
 
-    public void PrintAirlineFees()
-    {
-        //?????????????????????????????????????????
-        //gate fees????????????????????????????????
-        //wtf is gate fees?????????????????????????
-    }
+        public Terminal(string tn, Dictionary<string, Airline> al, Dictionary<string, Flight> fl,
+            Dictionary<string, BoardingGate> bg, Dictionary<string, double> gf)
+        {
+            TerminalName = tn;
+            Airlines = al;
+            Flights = fl;
+            BoardingGates = bg;
+            GateFees = gf;
+        }
 
-    public override string ToString()
-    {
-        return $"{TerminalName}";
+        //methods
+        public bool AddAirline(Airline addA)
+        {
+            //no clue lol
+            try
+            {
+                Airlines[addA.Code] = addA;
+                return true;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("uh oh");
+            }
+            return false;
+        }
+
+        public bool AddBoardingGate(BoardingGate addBg)
+        {
+            //no clue lol
+            try
+            {
+                BoardingGates[addBg.GateName] = addBg;
+                return true;
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("uh oh");
+            }
+            return false;
+        }
+
+        public Airline GetAirlineFromFlight(Flight flightA)
+        {
+            Airline airlineCompany = Airlines[flightA.FlightNumber.Substring(0, 2)];
+            return airlineCompany;
+        }
+
+        public void PrintAirlineFees()
+        {
+            //?????????????????????????????????????????
+            //gate fees????????????????????????????????
+            //wtf is gate fees?????????????????????????
+        }
+
+        public override string ToString()
+        {
+            return $"{TerminalName}";
+        }
     }
 }
