@@ -1,6 +1,6 @@
 ﻿namespace regenhector_prg2_assignment
 {
-    internal class Program
+    class Program
     {
         static void Main(string[] args)
         {
