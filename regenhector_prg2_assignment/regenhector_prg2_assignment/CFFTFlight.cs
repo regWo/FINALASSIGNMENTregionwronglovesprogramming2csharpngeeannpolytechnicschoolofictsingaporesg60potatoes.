@@ -16,8 +16,7 @@ public class CFFTFlight : Flight
     //methods
     public override double CalculateFees()
     {
-        //pls fix
-        return 0;
+        return base.CalculateFees() + 150;
     }
 
     public override string ToString()

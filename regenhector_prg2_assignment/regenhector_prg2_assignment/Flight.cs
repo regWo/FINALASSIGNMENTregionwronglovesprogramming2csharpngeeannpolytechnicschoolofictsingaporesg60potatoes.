@@ -22,7 +22,14 @@ public abstract class Flight
     }
 
     //methods
-    public abstract double CalculateFees();
+    public virtual double CalculateFees()
+    {
+        //if both values > 0 something has gone very wrong; either value should be > 0, not both
+        double singaporeOriginFee = (Origin == "Singapore (SIN)") ? 800 : 0;
+        double singaporeArrivingFee = (Destination == "Singapore (SIN)") ? 500 : 0;
+
+        return singaporeOriginFee + singaporeArrivingFee;
+    }
 
     public override string ToString()
     {

@@ -9,8 +9,8 @@ public class NORMFlight : Flight
     //methods
     public override double CalculateFees()
     {
-        //pls fix
-        return 0;
+        //if both values > 0 something has gone very wrong; either value should be > 0, not both
+        return base.CalculateFees();
     }
 
     public override string ToString()

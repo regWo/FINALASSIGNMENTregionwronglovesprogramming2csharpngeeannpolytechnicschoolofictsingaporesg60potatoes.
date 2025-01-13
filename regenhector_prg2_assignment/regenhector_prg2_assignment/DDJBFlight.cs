@@ -16,8 +16,7 @@ public class DDJBFlight : Flight
     //methods
     public override double CalculateFees()
     {
-        //pls fix
-        return 0;
+        return base.CalculateFees() + 300;
     }
 
     public override string ToString()

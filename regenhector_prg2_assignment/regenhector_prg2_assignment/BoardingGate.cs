@@ -24,8 +24,7 @@ public class BoardingGate
     //methods
     public double CalculateFees()
     {
-        //pls fix
-        return 0;
+        return 300;
     }
 
     public override string ToString()
