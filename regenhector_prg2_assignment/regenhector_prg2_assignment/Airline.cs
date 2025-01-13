@@ -10,6 +10,12 @@
         //constructors
         public Airline() { }
 
+        public Airline(string n, string c)
+        {
+            Name = n;
+            Code = c;
+        }
+
         public Airline(string n, string c, Dictionary<string, Flight> f)
         {
             Name = n;
