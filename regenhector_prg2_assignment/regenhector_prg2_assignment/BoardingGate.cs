@@ -11,6 +11,14 @@ public class BoardingGate
 
     //constructors
     public BoardingGate() {}
+    
+    public BoardingGate(string gn, bool cfft, bool ddjb, bool lwtt)
+    {
+        GateName = gn;
+        SupportsCFFT = cfft;
+        SupportsDDJB = ddjb;
+        SupportsLWTT = lwtt;
+    }
 
     public BoardingGate(string gn, bool cfft, bool ddjb, bool lwtt, Flight f)
     {
