@@ -1,20 +1,25 @@
-﻿namespace regenhector_prg2_assignment;
-
-public class NORMFlight : Flight
+﻿namespace regenhector_prg2_assignment
 {
-    //constructors
-    public NORMFlight() {}
-    public NORMFlight(string fn, string o, string d, DateTime et, string s) : base(fn, o, d, et, s) {}
-
-    //methods
-    public override double CalculateFees()
+    public class NORMFlight : Flight
     {
-        //if both values > 0 something has gone very wrong; either value should be > 0, not both
-        return base.CalculateFees();
-    }
+        //constructors
+        public NORMFlight() { }
 
-    public override string ToString()
-    {
-        return base.ToString();
+        public NORMFlight(string fn, string o, string d, DateTime et) : base(fn, o, d, et) { }
+
+        //i have no clue if we need this since RequestFee should be a constant value and always use the default value when class is instantiated
+        public NORMFlight(string fn, string o, string d, DateTime et, string s) : base(fn, o, d, et, s) { }
+
+        //methods
+        public override double CalculateFees()
+        {
+            //if both values > 0 something has gone very wrong; either value should be > 0, not both
+            return base.CalculateFees();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }
