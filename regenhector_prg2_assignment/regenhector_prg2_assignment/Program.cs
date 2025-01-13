@@ -31,7 +31,10 @@
         }
         static void Main()
         {
-            
+            //DO NOT TOUCH THESE ARE THE INITIALISERS
+            Terminal terminalFive = new Terminal("Terminal Name");
+            InitAirlines(terminalFive);
+            InitBoardingGates(terminalFive);
         }
     }
 }
