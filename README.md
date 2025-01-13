@@ -1,2 +1,0 @@
-# FINALASSIGNMENTregionwronglovesprogramming2csharpngeeannpolytechnicschoolofictsingaporesg60potatoes.
-# 😭
