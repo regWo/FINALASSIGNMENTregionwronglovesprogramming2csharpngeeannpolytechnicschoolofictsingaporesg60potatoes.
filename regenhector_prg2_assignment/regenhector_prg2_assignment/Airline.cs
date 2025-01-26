@@ -5,7 +5,7 @@
         //attributes
         public string Name { get; set; }
         public string Code { get; set; }
-        public Dictionary<string, Flight> Flights { get; set; }
+        public Dictionary<string, Flight> Flights { get; set; } = new Dictionary<string, Flight>();
 
         //constructors
         public Airline() { }
@@ -26,17 +26,55 @@
         //methods
         public bool AddFlight(Flight addF)
         {
-            //ok note to self string splice first 2 of flight from flights.csv then
-            //check if first 2 letters belong to airline
-            //if yes add to dict then return true
-            //if no return false
+            string airlineCode = addF.FlightNumber.Substring(0, 2);
+
+            if (airlineCode == Code)
+            {
+                Flights[addF.FlightNumber] = addF;
+                return true;
+            }
             return false;
         }
 
         public double CalculateFees()
         {
-            //pls fix
-            return 0;
+            double airlineFee = 0;
+            double subtractionDiscount = 0;
+            string[] originDiscountList = { "Dubai (DXB)", "Bangkok (BKK)", "Tokyo (NRT)" };
+            //List<string> originDiscountList = new List<string> { "Dubai (DXB)", "Bangkok (BKK)", "Tokyo (NRT)" };
+
+            foreach (Flight flight in Flights.Values)
+            {
+                airlineFee += flight.CalculateFees();
+                int flightHour = flight.ExpectedTime.Hour;
+
+                //before 11 am or after 9 pm
+                if (flightHour < 11 || flightHour > 21)
+                {
+                    subtractionDiscount += 110;
+                }
+
+                //.Contains is from the LINQ module for arrays
+                //if there's an issue remove the string array and replace it with the commented list
+                if (originDiscountList.Contains(flight.Origin))
+                {
+                    subtractionDiscount += 25;
+                }
+
+                if (flight is NORMFlight)
+                {
+                    subtractionDiscount += 50;
+                }
+            }
+
+            int numberOf3Discounts = Flights.Count() / 3;
+            subtractionDiscount += (numberOf3Discounts * 350);
+
+            //i also don't know what to call this
+            double additionalBillDiscount = (Flights.Count() > 5) ? 0.97 : 1;
+            airlineFee *= additionalBillDiscount;
+
+            return airlineFee - subtractionDiscount;
         }
 
         public bool RemoveFlight(Flight removeF)
