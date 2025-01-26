@@ -31,6 +31,56 @@
             }
         }
 
+        static void InitFlights(Terminal terminal)
+        {
+            DateTime today = DateTime.Today;
+
+            using (StreamReader sr = new StreamReader("flights.csv"))
+            {
+                string? s = sr.ReadLine();
+                while ((s = sr.ReadLine()) != null)
+                {
+                    string[] flightInfo = s.Trim().Split(",");
+
+                    //this is a very bad idea
+                    //newFlight should ALWAYS be reassigned if the data is correct
+                    //but c# won't let me add newFlight if it's unassigned
+                    //which is obviously a fair point
+                    //but this is even worse
+                    Flight newFlight = new NORMFlight();
+
+                    //yikes
+                    switch (flightInfo[4])
+                    {
+                        case "":
+                            newFlight = new NORMFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            //terminal.Flights[flightInfo[0]] = new NORMFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            break;
+                        case "DDJB":
+                            newFlight = new DDJBFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            //terminal.Flights[flightInfo[0]] = new DDJBFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            break;
+                        case "CFFT":
+                            newFlight = new CFFTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            //terminal.Flights[flightInfo[0]] = new CFFTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            break;
+                        case "LWTT":
+                            newFlight = new LWTTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            //terminal.Flights[flightInfo[0]] = new LWTTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
+                            break;
+                    }
+
+                    foreach (Airline airline in terminal.Airlines.Values)
+                    {
+                        bool canAddFlight = airline.AddFlight(newFlight);
+                        if (canAddFlight) break;
+                    }
+
+                    terminal.Flights[newFlight.FlightNumber] = newFlight;
+                }
+            }
+        }
+
         static string DisplayMainMenu()
         {
             Console.WriteLine("=============================================");
