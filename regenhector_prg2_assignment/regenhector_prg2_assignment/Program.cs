@@ -2,10 +2,24 @@
 {
     class Program
     {
+        static void InitAirlines(Terminal terminal)
+        {
+            using (StreamReader sr = new StreamReader("airlines.csv"))
+            {
+                string? s = sr.ReadLine();
+                while ((s = sr.ReadLine()) != null)
+                {
+                    string[] airlineInfo = s.Split(",");
+                    terminal.AddAirline(new Airline(airlineInfo[0], airlineInfo[1]));
+                }
+            }
+        }
+
         static void InitBoardingGates(Terminal terminal)
         {
             using (StreamReader sr = new StreamReader("boardinggates.csv"))
             {
+                // DONT TOUCH THIS CORRECT
                 string? s = sr.ReadLine();
                 while ((s = sr.ReadLine()) != null)
                 {
