@@ -19,7 +19,7 @@
         //methods
         public override double CalculateFees()
         {
-            return base.CalculateFees() + 500;
+            return base.CalculateFees() + RequestFee;
         }
 
         public override string ToString()
