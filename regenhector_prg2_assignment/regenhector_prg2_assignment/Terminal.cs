@@ -9,7 +9,6 @@
         public Dictionary<string, Flight> Flights { get; set; } = new Dictionary<string, Flight>();
         public Dictionary<string, BoardingGate> BoardingGates { get; set; } = new Dictionary<string, BoardingGate>();
 
-        //i have no clue what this is used for
         public Dictionary<string, double> GateFees { get; set; } = new Dictionary<string, double>();
 
         //constructors
@@ -33,7 +32,6 @@
         //methods
         public bool AddAirline(Airline addA)
         {
-            //no clue lol
             try
             {
                 Airlines[addA.Code] = addA;
@@ -41,14 +39,13 @@
             }
             catch (Exception)
             {
-                Console.WriteLine("uh oh");
+                Console.WriteLine("Please add a valid airline.");
             }
             return false;
         }
 
         public bool AddBoardingGate(BoardingGate addBg)
         {
-            //no clue lol
             try
             {
                 BoardingGates[addBg.GateName] = addBg;
@@ -56,7 +53,7 @@
             }
             catch (Exception)
             {
-                Console.WriteLine("uh oh");
+                Console.WriteLine("Please add a valid boarding gate.");
             }
             return false;
         }
@@ -69,9 +66,10 @@
 
         public void PrintAirlineFees()
         {
-            //?????????????????????????????????????????
-            //gate fees????????????????????????????????
-            //wtf is gate fees?????????????????????????
+            foreach (Airline airline in Airlines.Values)
+            {
+                Console.WriteLine($"{airline.CalculateFees()}");
+            }
         }
 
         public override string ToString()
