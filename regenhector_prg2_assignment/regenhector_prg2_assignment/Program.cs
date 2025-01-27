@@ -252,6 +252,37 @@
             }
         }
 
+        //Feature 7
+        
+        static void DisplayAirlineFlights(Terminal terminal)
+        {
+            Console.WriteLine("=============================================");
+            Console.WriteLine("List of Airlines for Changi Airport Terminal 5");
+            Console.WriteLine("=============================================");
+
+            Console.WriteLine($"{"Airline Code", -12} {"Airline Name", -18}");
+
+            foreach (Airline airline in terminal.Airlines.Values)
+            {
+                Console.WriteLine($"{airline.Code, -12} {airline.Name, -18}");
+            }
+
+            Console.Write("Enter Airline Code: ");
+            string userAirlineCode = Console.ReadLine();
+
+            Console.WriteLine("=============================================");
+            Console.WriteLine($"List of Flights for {terminal.Airlines[userAirlineCode].Name}");
+            Console.WriteLine("=============================================");
+
+            Console.WriteLine($"{"Flight Number",-13} {"Airline Name",-18} {"Origin",-18} {"Destination",-18} {"Expected Departure/Arrival Time",-22}");
+            foreach (Flight flight in terminal.Airlines[userAirlineCode].Flights.Values)
+            {
+                string airlineCompany = terminal.GetAirlineFromFlight(flight).Name;
+                Console.WriteLine($"{flight.FlightNumber, -13} {airlineCompany, -18} {flight.Origin, -18} {flight.Destination, -17} {flight.ExpectedTime: d/MM/yyyy h:mm:ss tt}");
+            }
+        }
+
+        //prints main menu
         static string DisplayMainMenu()
         {
             Console.WriteLine("=============================================");
