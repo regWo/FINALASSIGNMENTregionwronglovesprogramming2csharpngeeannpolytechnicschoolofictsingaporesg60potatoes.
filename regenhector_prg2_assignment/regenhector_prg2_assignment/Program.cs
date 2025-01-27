@@ -2,6 +2,7 @@
 {
     class Program
     {
+        //helper functions
         static Flight CreateFlightType(string[] flightInfo)
         {
             Flight newFlight;
@@ -39,6 +40,8 @@
 
 
 
+
+        //Feature 1
         static void InitAirlines(Terminal terminal)
         {
             using (StreamReader sr = new StreamReader("airlines.csv"))
@@ -52,6 +55,7 @@
             }
         }
 
+        //Feature 1
         static void InitBoardingGates(Terminal terminal)
         {
             using (StreamReader sr = new StreamReader("boardinggates.csv"))
@@ -68,6 +72,7 @@
             }
         }
 
+        //Feature 2
         static void InitFlights(Terminal terminal)
         {
             DateTime today = DateTime.Today;
