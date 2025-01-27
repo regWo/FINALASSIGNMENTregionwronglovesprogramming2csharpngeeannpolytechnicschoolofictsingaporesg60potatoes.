@@ -282,6 +282,34 @@
             }
         }
 
+        //Feature 9
+        static void DisplayScheduledFlights(Terminal terminal)
+        {
+            List<Flight> sortedFlightsList = new List<Flight>();
+
+            foreach (Flight flight in terminal.Flights.Values)
+            {
+                sortedFlightsList.Add(flight);
+            }
+
+            sortedFlightsList.Sort();
+
+            Console.WriteLine("=============================================");
+            Console.WriteLine("Flight Schedule for Changi Airport Terminal 5");
+            Console.WriteLine("=============================================");
+
+            Console.WriteLine($"{"Flight Number",-13} {"Airline Name",-18} {"Origin",-18} {"Destination",-18} " +
+                              $"{"Expected Departure/Arrival Time",-31}");
+            Console.WriteLine($"{"Status",-13} {"Boarding Gate",-13}\n");
+
+            foreach (Flight flight in sortedFlightsList)
+            {
+                Console.WriteLine($"{flight.FlightNumber,-13} {terminal.GetAirlineFromFlight(flight).Name,-18} {flight.Origin,-18} " +
+                                  $"{flight.Destination,-17} {flight.ExpectedTime,-31: d/M/yyyy h:mm:ss tt}");
+                Console.WriteLine($"{flight.Status,-13} {GetBoardingGate(terminal, flight.FlightNumber),-13}\n");
+            }
+        }
+
         //prints main menu
         static string DisplayMainMenu()
         {
@@ -317,10 +345,24 @@
                 switch (userOption)
                 {
                     case "1":
-                        
+                        DisplayFlightInfo(terminalFive);
                         break;
                     case "2":
-
+                        DisplayBoardingGates(terminalFive);
+                        break;
+                    case "3":
+                        AssignGateToFlight(terminalFive);
+                        break;
+                    case "4":
+                        CreateNewFlight(terminalFive);
+                        break;
+                    case "5":
+                        DisplayAirlineFlights(terminalFive);
+                        break;
+                    case "6":
+                        break;
+                    case "7":
+                        DisplayScheduledFlights(terminalFive);
                         break;
                 }
             }
