@@ -269,6 +269,7 @@
             }
         }
 
+        //prints main menu
         static string DisplayMainMenu()
         {
             Console.WriteLine("=============================================");
