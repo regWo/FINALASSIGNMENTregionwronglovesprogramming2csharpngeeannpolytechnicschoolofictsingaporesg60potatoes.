@@ -1,13 +1,13 @@
 ﻿namespace regenhector_prg2_assignment
 {
-    public abstract class Flight
+    public abstract class Flight : IComparable<Flight>
     {
         //attributes
         public string FlightNumber { get; set; }
         public string Origin { get; set; }
         public string Destination { get; set; }
         public DateTime ExpectedTime { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = "On Time";
 
         //constructors
         public Flight() { }
@@ -37,6 +37,11 @@
             double singaporeArrivingFee = (Destination == "Singapore (SIN)") ? 500 : 0;
 
             return singaporeOriginFee + singaporeArrivingFee;
+        }
+
+        public int CompareTo(Flight compareF)
+        {
+            return this.ExpectedTime.CompareTo(compareF.ExpectedTime);
         }
 
         public override string ToString()
