@@ -105,6 +105,140 @@
             }
         }
 
+        //Feature 3
+        static void DisplayFlightInfo(Terminal terminal)
+        {
+            Console.WriteLine("=============================================");
+            Console.WriteLine("List of Flights for Changi Airport Terminal 5");
+            Console.WriteLine("=============================================");
+            Console.WriteLine($"{"Flight Number",-13} {"Airline Name",-18} {"Origin",-18} {"Destination",-18} {"Expected Departure/Arrival Time",-22}");
+            foreach (Flight flight in terminal.Flights.Values)
+            {
+                //get airline company
+                //substring just gets the first two letters of the flight number i.e. "SQ"
+                //returns Airline class and .Name to get airline name
+                string airlineCompany = terminal.GetAirlineFromFlight(flight).Name;
+
+                Console.WriteLine($"{flight.FlightNumber,-13} {airlineCompany,-18} {flight.Origin,-18} {flight.Destination,-18} {flight.ExpectedTime: dd/MM/yyyy h:mm:ss tt}");
+            }
+        }
+
+        //Feature 5
+        static void AssignGateToFlight(Terminal terminal)
+        {
+            Console.WriteLine("=============================================");
+            Console.WriteLine("Assign a Boarding Gate to a Flight");
+            Console.WriteLine("=============================================");
+            Console.Write("Enter Flight Number: ");
+            string flightNumber = Console.ReadLine();
+            var flight = terminal.Flights[flightNumber];
+
+            //note to self this is bad
+            //it should always return 4 letters for the flight type designation
+            //but its probably not a good idea
+            string specialRequestCode = terminal.Flights[flightNumber].GetType().Name.Substring(0, 4);
+            specialRequestCode = (specialRequestCode == "NORM") ? "None" : specialRequestCode;
+
+            Console.WriteLine($"Flight Number: {flightNumber}\nOrigin: {flight.Origin}\nDestination: {flight.Destination}\n" +
+                              $"Expected Time: {flight.ExpectedTime: dd/MM/yyyy h:mm:ss tt}\nSpecial Request Code: {specialRequestCode}");
+
+            string boardingGateName;
+            while (true)
+            {
+                Console.Write("Enter Boarding Gate Name: ");
+                boardingGateName = Console.ReadLine();
+                BoardingGate boardingGate = terminal.BoardingGates[boardingGateName];
+
+                Console.WriteLine($"Supports DDJB: {boardingGate.SupportsDDJB}\nSupports CFFT: {boardingGate.SupportsCFFT}\nSuuports LWTT: {boardingGate.SupportsLWTT}");
+                //NOTE NO NEED TO CHECK FOR SPECIAL REQUEST CODE MATCH FOR BASIC FEATURES, MIGHT WANT TO IMPLEMENT LATER FOR ADVANCED
+                if (boardingGate.Flight != null)
+                {
+                    Console.WriteLine("A flight already exists for this boarding gate. Please pick another gate.");
+                    continue;
+                }
+                //this will not execute if a flight exists for a gate as continue in the if block will skip this line back to the start
+                terminal.BoardingGates[boardingGateName].Flight = flight;
+                break;
+            }
+
+            Console.WriteLine($"Flight Number: {flightNumber}\nOrigin: {flight.Origin}\nDestination: {flight.Destination}\n" +
+                              $"Expected Time: {flight.ExpectedTime: dd/MM/yyyy h:mm:ss tt}\nSpecial Request Code: {specialRequestCode}\n" +
+                              $"Boarding Gate: {boardingGateName}");
+
+            Console.Write("Would you like to update the status of the flight? (Y/N) ");
+            string willUpdateStatus = Console.ReadLine();
+
+            //default to on time, if the user enters y this will be overwritten so it doesn't matter
+            terminal.Flights[flightNumber].Status = "On Time";
+
+            if (willUpdateStatus == "Y")
+            {
+                Console.WriteLine("1. Delayed\n2. Boarding\n3. On Time");
+                Console.Write("Please select the new status of the flight: ");
+                string newFlightStatusOption = Console.ReadLine();
+
+                if (newFlightStatusOption == "1") terminal.Flights[flightNumber].Status = "Delayed";
+                else if (newFlightStatusOption == "2") terminal.Flights[flightNumber].Status = "Boarding";
+                //no need for "3" (refer to the comment above)
+            }
+
+            Console.WriteLine($"Flight {flightNumber} has been assigned to Boarding Gate {boardingGateName}");
+        }
+
+        //Feature 6
+        static void CreateNewFlight(Terminal terminal)
+        {
+            while (true)
+            {
+                Console.Write("Enter Flight Number: ");
+                string flightNumber = Console.ReadLine();
+
+                Console.Write("Enter Origin: ");
+                string flightOrigin = Console.ReadLine();
+
+                Console.Write("Enter Destination: ");
+                string flightDestination = Console.ReadLine();
+
+                Console.Write("Enter Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+                string flightExpectedTime = Console.ReadLine();
+
+                Console.Write("Enter Special Request Code (CFFT/DDJB/LWTT/None): ");
+                string flightSpecialRequestCode = Console.ReadLine();
+                flightSpecialRequestCode = (flightSpecialRequestCode == "None") ? "" : flightSpecialRequestCode;
+
+                try
+                {
+                    Flight newFlight = CreateFlightType(new string[] { flightNumber, flightOrigin, flightDestination, flightExpectedTime, flightSpecialRequestCode });
+
+                    foreach (Airline airline in terminal.Airlines.Values)
+                    {
+                        bool canAddFlight = airline.AddFlight(newFlight);
+                        if (canAddFlight) break;
+                    }
+                    terminal.Flights[newFlight.FlightNumber] = newFlight;
+
+
+
+                    using (StreamWriter sw = new StreamWriter("flights.csv", true))
+                    {
+                        sw.WriteLine($"{flightNumber},{flightOrigin},{flightDestination},{flightExpectedTime: h:mm tt},{flightSpecialRequestCode}");
+                    }
+
+                    Console.WriteLine($"Flight {flightNumber} has been added!");
+
+                    Console.Write("Would you like to add another flight? (Y/N): ");
+                    string addAnotherFlight = Console.ReadLine();
+
+                    if (addAnotherFlight == "N") break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error has occured");
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+
         static string DisplayMainMenu()
         {
             Console.WriteLine("=============================================");
