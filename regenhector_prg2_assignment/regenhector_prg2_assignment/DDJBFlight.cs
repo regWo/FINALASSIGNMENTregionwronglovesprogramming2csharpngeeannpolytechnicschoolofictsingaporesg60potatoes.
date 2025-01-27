@@ -7,8 +7,7 @@
 
         //constructors
         public DDJBFlight() { }
-
-        public DDJBFlight(string fn, string o, string d, DateTime et, string s) : base(fn, o, d, et, s) { }
+        public DDJBFlight(string fn, string o, string d, DateTime et) : base(fn, o, d, et) { }
 
         public DDJBFlight(string fn, string o, string d, DateTime et, string s) : base(fn, o, d, et, s) { }
 
