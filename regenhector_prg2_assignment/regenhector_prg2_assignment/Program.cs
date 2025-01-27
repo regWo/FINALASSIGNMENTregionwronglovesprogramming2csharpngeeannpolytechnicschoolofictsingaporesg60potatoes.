@@ -2,6 +2,43 @@
 {
     class Program
     {
+        static Flight CreateFlightType(string[] flightInfo)
+        {
+            Flight newFlight;
+
+            newFlight = flightInfo[4] switch
+            {
+                "" => new NORMFlight(flightInfo[0], flightInfo[1], flightInfo[2],
+                    DateTime.Parse(flightInfo[3])),
+                "CFFT" => new CFFTFlight(flightInfo[0], flightInfo[1], flightInfo[2],
+                    DateTime.Parse(flightInfo[3])),
+                "DDJB" => new DDJBFlight(flightInfo[0], flightInfo[1], flightInfo[2],
+                    DateTime.Parse(flightInfo[3])),
+                "LWTT" => new LWTTFlight(flightInfo[0], flightInfo[1], flightInfo[2],
+                    DateTime.Parse(flightInfo[3])),
+
+                _ => throw new Exception("Invalid flight")
+            };
+
+            return newFlight;
+        }
+
+        static string GetBoardingGate(Terminal terminal, string flightNumber)
+        {
+            string flightBoardingGate = "Unassigned";
+            foreach (KeyValuePair<string, BoardingGate> kvp in terminal.BoardingGates)
+            {
+                if (kvp.Value.Flight != null && kvp.Value.Flight.FlightNumber == flightNumber)
+                {
+                    flightBoardingGate = kvp.Key;
+                    break;
+                }
+            }
+            return flightBoardingGate;
+        }
+
+
+
         static void InitAirlines(Terminal terminal)
         {
             using (StreamReader sr = new StreamReader("airlines.csv"))
@@ -40,43 +77,25 @@
                 string? s = sr.ReadLine();
                 while ((s = sr.ReadLine()) != null)
                 {
-                    string[] flightInfo = s.Trim().Split(",");
-
-                    //this is a very bad idea
-                    //newFlight should ALWAYS be reassigned if the data is correct
-                    //but c# won't let me add newFlight if it's unassigned
-                    //which is obviously a fair point
-                    //but this is even worse
-                    Flight newFlight = new NORMFlight();
-
-                    //yikes
-                    switch (flightInfo[4])
+                    try
                     {
-                        case "":
-                            newFlight = new NORMFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            //terminal.Flights[flightInfo[0]] = new NORMFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            break;
-                        case "DDJB":
-                            newFlight = new DDJBFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            //terminal.Flights[flightInfo[0]] = new DDJBFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            break;
-                        case "CFFT":
-                            newFlight = new CFFTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            //terminal.Flights[flightInfo[0]] = new CFFTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            break;
-                        case "LWTT":
-                            newFlight = new LWTTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            //terminal.Flights[flightInfo[0]] = new LWTTFlight(flightInfo[0], flightInfo[1], flightInfo[2], DateTime.Parse(flightInfo[3]));
-                            break;
-                    }
+                        string[] flightInfo = s.Trim().Split(",");
 
-                    foreach (Airline airline in terminal.Airlines.Values)
+                        Flight newFlight = CreateFlightType(flightInfo);
+
+                        foreach (Airline airline in terminal.Airlines.Values)
+                        {
+                            bool canAddFlight = airline.AddFlight(newFlight);
+                            if (canAddFlight) break;
+                        }
+
+                        terminal.Flights[newFlight.FlightNumber] = newFlight;
+                    }
+                    catch (Exception ex)
                     {
-                        bool canAddFlight = airline.AddFlight(newFlight);
-                        if (canAddFlight) break;
+                        Console.WriteLine("An error has occured");
+                        Console.WriteLine(ex.Message);
                     }
-
-                    terminal.Flights[newFlight.FlightNumber] = newFlight;
                 }
             }
         }
