@@ -281,6 +281,164 @@
                 Console.WriteLine($"{flight.FlightNumber, -13} {airlineCompany, -18} {flight.Origin, -18} {flight.Destination, -17} {flight.ExpectedTime: d/MM/yyyy h:mm:ss tt}");
             }
         }
+        //Feature 8
+        static void DisplayFlightInfo(Terminal terminal, string flightNumber, string whatUpdated /bad name lol/)
+        {
+            string airlineCompany = terminal.GetAirlineFromFlight(terminal.Flights[flightNumber] /Flight object/).Name;
+
+            Console.WriteLine($"{whatUpdated}");
+            Console.WriteLine($"Flight Number: {flightNumber}");
+            Console.WriteLine($"Airline Name: {airlineCompany}");
+            Console.WriteLine($"Origin: {terminal.Flights[flightNumber].Origin}");
+            Console.WriteLine($"Destination: {terminal.Flights[flightNumber].Destination}");
+            Console.WriteLine($"Expected Departure/Arrival Time: {terminal.Flights[flightNumber].ExpectedTime: d/M/yyyy h:mm:ss tt}");
+            Console.WriteLine($"Status: {terminal.Flights[flightNumber].Status}");
+
+            //note to self this is bad
+            //it should always return 4 letters for the flight type designation
+            //but its probably not a good idea
+            string flightSpecialRequestCode = terminal.Flights[flightNumber].GetType().Name.Substring(0, 4);
+            flightSpecialRequestCode = (flightSpecialRequestCode == "NORM") ? "None" : flightSpecialRequestCode;
+
+            Console.WriteLine($"Special Request Code: {flightSpecialRequestCode}");
+
+            string flightBoardingGate = GetBoardingGate(terminal, flightNumber);
+            Console.WriteLine($"Boarding Gate: {flightBoardingGate}");
+        }
+
+        static void ModifyBasicInfo(Terminal terminal, string flightNumber)
+        {
+            Console.Write("Enter new Origin: ");
+            string newOrigin = Console.ReadLine();
+            terminal.Flights[flightNumber].Origin = newOrigin;
+
+            Console.Write("Enter new Destination: ");
+            string newDestination = Console.ReadLine();
+            terminal.Flights[flightNumber].Destination = newDestination;
+
+            Console.Write("Enter new Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
+            DateTime newExpectedTime = DateTime.Parse(Console.ReadLine());
+            terminal.Flights[flightNumber].ExpectedTime = newExpectedTime;
+            DisplayFlightInfo(terminal, flightNumber, "Flight updated!");
+        }
+
+        static void ModifyStatus(Terminal terminal, string flightNumber)
+        {
+            Console.Write("Enter new flight status: ");
+            string newFlightStatus = Console.ReadLine();
+            terminal.Flights[flightNumber].Status = newFlightStatus;
+            DisplayFlightInfo(terminal, flightNumber, "Status updated!");
+        }
+
+        static void ModifySpecialRequestCode(Terminal terminal, string flightNumber)
+        {
+            Console.Write("Enter new special request code (CFFT/DDJB/LWTT/None): ");
+            string newSpecialRequestCode = Console.ReadLine();
+            newSpecialRequestCode = (newSpecialRequestCode == "None") ? "" : newSpecialRequestCode;
+
+            terminal.Flights[flightNumber] = CreateFlightType(new string[]
+            {
+                flightNumber, terminal.Flights[flightNumber].Origin, terminal.Flights[flightNumber].Destination,
+                        terminal.Flights[flightNumber].ExpectedTime.ToString() /VERY BAD/, newSpecialRequestCode
+            });
+
+            DisplayFlightInfo(terminal, flightNumber, "Special Request Code updated!");
+        }
+
+        static void ModifyBoardingGate(Terminal terminal, string flightNumber)
+        {
+            string specialRequestCode = terminal.Flights[flightNumber].GetType().Name.Substring(0, 4);
+
+            while (true)
+            {
+                Console.Write("Enter new boarding gate: ");
+                string newBoardingGate = Console.ReadLine();
+
+                if (!terminal.BoardingGates.ContainsKey(newBoardingGate))
+                {
+                    Console.WriteLine("No boarding gate found.");
+                    continue;
+                }
+
+                //this checks the current flight's special request code
+                //for example, if it is SRC is CFFT it checks whether the current boarding gate supports CFFT
+                //this works because flights can only 1 have SRC
+                //NORM is always true because normal flights have no SRC thus we want to avoid the supports SRC check
+                bool supportsSpecialRequest = specialRequestCode switch
+                {
+                    "NORM" => true,
+                    "CFFT" => terminal.BoardingGates[newBoardingGate].SupportsCFFT,
+                    "DDJB" => terminal.BoardingGates[newBoardingGate].SupportsDDJB,
+                    "LWTT" => terminal.BoardingGates[newBoardingGate].SupportsLWTT,
+                    _ => false
+                };
+
+                if (!supportsSpecialRequest)
+                {
+                    Console.WriteLine($"Boarding gate does not support {specialRequestCode}");
+                    continue;
+                }
+
+                terminal.BoardingGates[newBoardingGate].Flight = terminal.Flights[flightNumber];
+
+                //this should only execute if boarding gate exists and supports SRC
+                break;
+            }
+        }
+
+        static void DeleteFlight(Terminal terminal, string flightNumber)
+        {
+            Console.Write("Are you sure you want to delete this flight? (Y/N) ");
+            string deleteConfirmation = Console.ReadLine();
+
+            //this is just for safety's sake
+            //i think all other times flight is used in other classes it's by reference
+            //but i could be wrong and it's probably better to just ensure it's totally deleted
+            terminal.Flights.Remove(flightNumber);
+            terminal.Airlines[terminal.GetAirlineFromFlight(terminal.Flights[flightNumber]).Code].Flights
+                .Remove(flightNumber);
+
+            string flightBoardingGate = GetBoardingGate(terminal, flightNumber);
+            if (flightBoardingGate != "Unassigned") terminal.BoardingGates[flightBoardingGate].Flight = null!;
+        }
+
+        static void ModifyFlightDetails(Terminal terminal)
+        {
+            DisplayAirlineFlights(terminal);
+
+            Console.Write("Choose an existing Flight to modify or delete: ");
+            string userFlightNumber = Console.ReadLine();
+
+            if (userOption == "1")
+            {
+                Console.WriteLine("1. Modify Basic Information");
+                Console.WriteLine("2. Modify Status");
+                Console.WriteLine("3. Modify Special Request Code");
+                Console.WriteLine("4. Modify Boarding Gate");
+                string optionOneChoice = Console.ReadLine();
+
+                switch (optionOneChoice)
+                {
+                    case "1":
+                        ModifyBasicInfo(terminal, userFlightNumber);
+                        break;
+                    case "2":
+                        ModifyStatus(terminal, userFlightNumber);
+                        break;
+                    case "3":
+                        ModifySpecialRequestCode(terminal, userFlightNumber);
+                        break;
+                    case "4":
+                        ModifyBoardingGate(terminal, userFlightNumber);
+                        break;
+                }
+            }
+
+            else if (userOption == "2")
+            {
+                DeleteFlight(terminal, userFlightNumber);
+            }
+        }
 
         //Feature 9
         static void DisplayScheduledFlights(Terminal terminal)
@@ -360,6 +518,7 @@
                         DisplayAirlineFlights(terminalFive);
                         break;
                     case "6":
+                        ModifyFlightDetails(terminalFive);
                         break;
                     case "7":
                         DisplayScheduledFlights(terminalFive);
