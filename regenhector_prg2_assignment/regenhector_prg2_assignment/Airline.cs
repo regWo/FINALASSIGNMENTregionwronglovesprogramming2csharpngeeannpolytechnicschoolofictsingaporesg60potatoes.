@@ -28,6 +28,8 @@
         {
             string airlineCode = addF.FlightNumber.Substring(0, 2);
 
+            if (Flights.ContainsKey(addF.FlightNumber)) return false;
+
             if (airlineCode == Code)
             {
                 Flights[addF.FlightNumber] = addF;
@@ -72,7 +74,11 @@
 
             //i also don't know what to call this
             double additionalBillDiscount = (Flights.Count() > 5) ? 0.97 : 1;
+            Console.WriteLine($"Orignal Subtotal: {airlineFee:C}");
             airlineFee *= additionalBillDiscount;
+
+            Console.WriteLine($"Discount: {(1 - additionalBillDiscount) * 100:F2}% + {subtractionDiscount:C}");
+            Console.WriteLine($"Final total: {(airlineFee - subtractionDiscount):C}\n");
 
             return airlineFee - subtractionDiscount;
         }
