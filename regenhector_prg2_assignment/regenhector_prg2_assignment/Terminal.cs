@@ -32,34 +32,31 @@
         //methods
         public bool AddAirline(Airline addA)
         {
-            try
+            if (Airlines.ContainsKey(addA.Code))
             {
-                Airlines[addA.Code] = addA;
-                return true;
+                return false;
             }
-            catch (Exception)
-            {
-                Console.WriteLine("Please add a valid airline.");
-            }
-            return false;
+            Airlines[addA.Code] = addA;
+            return true;
         }
 
         public bool AddBoardingGate(BoardingGate addBg)
         {
-            try
+            if (BoardingGates.ContainsKey(addBg.GateName))
             {
-                BoardingGates[addBg.GateName] = addBg;
-                return true;
+                return false;
             }
-            catch (Exception)
-            {
-                Console.WriteLine("Please add a valid boarding gate.");
-            }
-            return false;
+            BoardingGates[addBg.GateName] = addBg;
+            return true;
         }
 
         public Airline GetAirlineFromFlight(Flight flightA)
         {
+            if (!Flights.ContainsKey(flightA.FlightNumber))
+            {
+                return null;
+            }
+
             Airline airlineCompany = Airlines[flightA.FlightNumber.Substring(0, 2)];
             return airlineCompany;
         }
