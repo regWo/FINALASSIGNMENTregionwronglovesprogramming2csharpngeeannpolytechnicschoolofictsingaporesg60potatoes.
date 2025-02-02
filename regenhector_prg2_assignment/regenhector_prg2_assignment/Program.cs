@@ -861,6 +861,104 @@
             }
         }
 
+        static void ProcessUnassignedFlights(Terminal terminal)
+        {
+            Queue<Flight> flightGateQueue = new Queue<Flight>();
+            int unassignedGatesCount = 0;
+            int processedManually = 0;
+            int processedAutomatically = 0;
+
+            foreach (Flight flight in terminal.Flights.Values)
+            {
+                string flightNumber = flight.FlightNumber;
+                string boardingGate = GetBoardingGateCode(terminal, flightNumber);
+
+                if (boardingGate == "Unassigned") flightGateQueue.Enqueue(flight);
+            }
+
+            foreach (BoardingGate boardingGate in terminal.BoardingGates.Values)
+            {
+                if (boardingGate.Flight == null) unassignedGatesCount++;
+                else processedManually++;
+            }
+
+            Console.WriteLine($"Number of flights with no boarding gates: {flightGateQueue.Count}");
+            Console.WriteLine($"Number of gates with no flights: {unassignedGatesCount}");
+
+            //this doesnt actually do anything its just for a loop
+            while (flightGateQueue.Count > 0)
+            {
+                Flight dequeuedFlight = flightGateQueue.Dequeue();
+                string specialRequestCode = dequeuedFlight.GetType().Name.Substring(0, 4);
+
+                if (specialRequestCode != "NORM")
+                {
+                    foreach (BoardingGate boardingGate in terminal.BoardingGates.Values)
+                    {
+                        bool supportsSpecialRequest = specialRequestCode switch
+                        {
+                            "NORM" => true,
+                            "CFFT" => boardingGate.SupportsCFFT,
+                            "DDJB" => boardingGate.SupportsDDJB,
+                            "LWTT" => boardingGate.SupportsLWTT,
+                            _ => false
+                        };
+
+                        if (supportsSpecialRequest && boardingGate.Flight == null)
+                        {
+                            boardingGate.Flight = dequeuedFlight;
+                            DisplayFlightInfo(terminal, dequeuedFlight.FlightNumber, "");
+                            processedAutomatically++;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (BoardingGate boardingGate in terminal.BoardingGates.Values)
+                    {
+                        if (boardingGate.Flight == null && (!boardingGate.SupportsCFFT && !boardingGate.SupportsDDJB && !boardingGate.SupportsLWTT))
+                        {
+                            boardingGate.Flight = dequeuedFlight;
+                            DisplayFlightInfo(terminal, dequeuedFlight.FlightNumber, "");
+                            processedAutomatically++;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            Console.WriteLine($"Number of flights and gates processed and assigned: {processedAutomatically + processedManually}.");
+            if (processedManually == 0) Console.WriteLine("Percentage change in processed and assigned flights and gates: Undefined.");
+            else Console.WriteLine($"Percentage change in processed and assigned flights and gates: {((processedAutomatically / processedManually) * 100):F2}.");
+        }
+
+        static void DisplayDailyAirlineFee(Terminal terminal)
+        {
+            int unassignedCount = 0;
+            double feesEarned = 0;
+
+            foreach (Flight flight in terminal.Flights.Values)
+            {
+                string boardingGate = GetBoardingGateCode(terminal, flight.FlightNumber);
+                if (boardingGate == "Unassigned")
+                {
+                    Console.WriteLine($"Flight {flight.FlightNumber} has not been assigned a boarding gate! Please assign and try again.");
+                    unassignedCount++;
+                }
+            }
+
+            if (unassignedCount != 0) return; //ensure all flights are assigned a gate
+
+            foreach (Airline airline in terminal.Airlines.Values)
+            {
+                Console.WriteLine($"{airline.Name} fees charged:");
+                feesEarned += airline.CalculateFees();
+            }
+
+            Console.WriteLine($"Total earned in fees: {feesEarned:C}");
+        }
+
         //prints main menu
         static string DisplayMainMenu()
         {
@@ -874,6 +972,8 @@
             Console.WriteLine("5. Display Airline Flights");
             Console.WriteLine("6. Modify Flight Details");
             Console.WriteLine("7. Display Flight Schedule");
+            Console.WriteLine("8. Process Unassigned Flights");
+            Console.WriteLine("9. Display Daily Airline Fee");
             Console.WriteLine("0. Exit");
             Console.Write("Please select your option: ");
             string userOption = Console.ReadLine();
@@ -886,7 +986,7 @@
             //DO NOT TOUCH THESE ARE THE INITIALISERS
             Terminal terminalFive = new Terminal("Terminal Name");
             InitAirlines(terminalFive);
-            InitBoardingGates(terminalFive); 
+            InitBoardingGates(terminalFive);
             InitFlights(terminalFive);
 
             Console.WriteLine("Loading Airlines...");
@@ -897,7 +997,7 @@
             Console.WriteLine($"{terminalFive.Flights.Count} Flights Loaded!\n\n\n\n");
             //DO NOT TOUCH THESE ARE THE INITIALISERS
 
-            string[] acceptableOptions = {"1", "2", "3", "4", "5", "6", "7"};
+            string[] acceptableOptions = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
             while (true)
             {
@@ -932,6 +1032,12 @@
                             break;
                         case "7":
                             DisplayScheduledFlights(terminalFive);
+                            break;
+                        case "8":
+                            ProcessUnassignedFlights(terminalFive);
+                            break;
+                        case "9":
+                            DisplayDailyAirlineFee(terminalFive);
                             break;
                     }
                 }
