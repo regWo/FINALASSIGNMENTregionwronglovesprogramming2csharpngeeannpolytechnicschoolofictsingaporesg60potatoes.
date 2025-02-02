@@ -253,7 +253,7 @@
             while (true)
             {
                 Console.Write("Enter Flight Number: ");
-                flightNumber = Console.ReadLine();
+                flightNumber = Console.ReadLine().Trim();
 
                 flightNumber = flightNumber?.ToUpper();
 
@@ -292,7 +292,7 @@
             while (true)
             {
                 Console.Write("Enter Boarding Gate Name: ");
-                boardingGateName = Console.ReadLine();
+                boardingGateName = Console.ReadLine().Trim();
                 boardingGateName = boardingGateName?.ToUpper();
 
                 //VALIDATION
@@ -330,7 +330,7 @@
             {
                 if (!firstIterationUS) Console.WriteLine("Invalid answer! Please try again.");
                 Console.Write("Would you like to update the status of the flight? (Y/N): ");
-                willUpdateStatus = Console.ReadLine();
+                willUpdateStatus = Console.ReadLine().Trim();
                 willUpdateStatus = willUpdateStatus?.ToUpper();
 
                 firstIterationUS = false;
@@ -353,7 +353,7 @@
                 {
                     if (!firstIterationFS) Console.WriteLine("Invalid flight status! Please try again.");
                     Console.Write("Please select the new status of the flight: ");
-                    newFlightStatusOption = Console.ReadLine();
+                    newFlightStatusOption = Console.ReadLine().Trim();
 
                     firstIterationFS = false;
                 } while (!newStatusOptionsA.Contains(newFlightStatusOption));
@@ -384,7 +384,7 @@
                 while (true)
                 {
                     Console.Write("Enter Flight Number: ");
-                    flightNumber = Console.ReadLine();
+                    flightNumber = Console.ReadLine().Trim();
                     flightNumber = flightNumber?.ToUpper();
 
                     string[] flightNumberInfo = flightNumber.Split(" ");
@@ -426,11 +426,11 @@
                 {
                     //EITHER MUST BE SINGAPORE PLEASE FIX
                     Console.Write("Enter Origin: ");
-                    flightOrigin = Console.ReadLine();
+                    flightOrigin = Console.ReadLine().Trim();
                     flightOrigin = CapitaliseString(flightOrigin);
 
                     Console.Write("Enter Destination: ");
-                    flightDestination = Console.ReadLine();
+                    flightDestination = Console.ReadLine().Trim();
                     flightDestination = CapitaliseString(flightDestination);
 
                     if ((flightOrigin != "Singapore (SIN)" && flightDestination != "Singapore (SIN)") ||
@@ -447,7 +447,7 @@
                 while (!isExpectedTimeValid)
                 {
                     Console.Write("Enter Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
-                    flightExpectedTime = Console.ReadLine();
+                    flightExpectedTime = Console.ReadLine().Trim();
 
                     try
                     {
@@ -463,7 +463,7 @@
                 while (true)
                 {
                     Console.Write("Enter Special Request Code (CFFT/DDJB/LWTT/None): ");
-                    flightSpecialRequestCode = Console.ReadLine();
+                    flightSpecialRequestCode = Console.ReadLine().Trim();
                     flightSpecialRequestCode = flightSpecialRequestCode?.ToUpper();
 
                     if (!specialRequestCodesA.Contains(flightSpecialRequestCode))
@@ -519,7 +519,7 @@
                 {
                     if (!firstIteration) Console.WriteLine("Invalid answer! Please try again.");
                     Console.Write("Would you like to add another flight? (Y/N): ");
-                    addAnotherFlight = Console.ReadLine();
+                    addAnotherFlight = Console.ReadLine().Trim();
                     addAnotherFlight = addAnotherFlight?.ToUpper();
 
                     firstIteration = false;
@@ -552,7 +552,7 @@
             {
                 if (!firstIteration) Console.WriteLine("Invalid airline code! Please try again.");
                 Console.Write("Enter Airline Code: ");
-                userAirlineCode = Console.ReadLine();
+                userAirlineCode = Console.ReadLine().Trim();
                 userAirlineCode = userAirlineCode?.ToUpper();
 
                 firstIteration = false;
@@ -604,11 +604,11 @@
             {
                 //EITHER MUST BE SINGAPORE PLEASE FIX
                 Console.Write("Enter Origin: ");
-                newOrigin = Console.ReadLine();
+                newOrigin = Console.ReadLine().Trim();
                 newOrigin = CapitaliseString(newOrigin);
 
                 Console.Write("Enter Destination: ");
-                newDestination = Console.ReadLine();
+                newDestination = Console.ReadLine().Trim();
                 newDestination = CapitaliseString(newDestination);
 
                 if ((newOrigin != "Singapore (SIN)" && newDestination != "Singapore (SIN)") ||
@@ -628,7 +628,7 @@
             while (!isExpectedTimeValid)
             {
                 Console.Write("Enter new Expected Departure/Arrival Time (dd/mm/yyyy hh:mm): ");
-                newExpectedTime = Console.ReadLine();
+                newExpectedTime = Console.ReadLine().Trim();
 
                 try
                 {
@@ -656,7 +656,7 @@
             {
                 if (!firstIteration) Console.WriteLine("Invalid flight status! Please try again.");
                 Console.Write("Enter new flight status: ");
-                newFlightStatus = Console.ReadLine();
+                newFlightStatus = Console.ReadLine().Trim();
                 newFlightStatus = newFlightStatus?.ToLower();
 
                 firstIteration = false;
@@ -675,7 +675,7 @@
             {
                 if (!firstIteration) Console.WriteLine("Invalid special request code! Please try again.");
                 Console.Write("Enter new special request code (CFFT/DDJB/LWTT/None): ");
-                newSpecialRequestCode = Console.ReadLine();
+                newSpecialRequestCode = Console.ReadLine().Trim();
                 newSpecialRequestCode = newSpecialRequestCode?.ToUpper();
 
                 firstIteration = false;
@@ -699,7 +699,7 @@
             while (true)
             {
                 Console.Write("Enter new boarding gate: ");
-                string newBoardingGate = Console.ReadLine();
+                string newBoardingGate = Console.ReadLine().Trim();
                 newBoardingGate = newBoardingGate?.ToUpper();
 
                 if (!terminal.BoardingGates.ContainsKey(newBoardingGate))
@@ -742,7 +742,7 @@
             {
                 if (!firstIteration) Console.WriteLine("Invalid answer! Please try again.");
                 Console.Write("Are you sure you want to delete this flight? (Y/N): ");
-                deleteConfirmation = Console.ReadLine();
+                deleteConfirmation = Console.ReadLine().Trim();
                 deleteConfirmation = deleteConfirmation?.ToUpper();
 
                 firstIteration = false;
@@ -772,7 +772,7 @@
             {
                 if (!firstIterationFN) Console.WriteLine("Flight does not exist! Please try again.");
                 Console.Write("Choose an existing Flight to modify or delete: ");
-                userFlightNumber = Console.ReadLine();
+                userFlightNumber = Console.ReadLine().Trim();
                 userFlightNumber = userFlightNumber?.ToUpper();
 
                 firstIterationFN = false;
@@ -787,7 +787,7 @@
             {
                 if (!firstIterationUO) Console.WriteLine("Invalid answer! Please try again.");
                 Console.Write("Choose an option: ");
-                userOption = Console.ReadLine();
+                userOption = Console.ReadLine().Trim();
 
                 firstIterationUO = false;
             } while (!(userOption == "1" || userOption == "2"));
@@ -805,7 +805,7 @@
                     Console.WriteLine("3. Modify Special Request Code");
                     Console.WriteLine("4. Modify Boarding Gate");
                     Console.Write("Choose an option: ");
-                    optionOneChoice = Console.ReadLine();
+                    optionOneChoice = Console.ReadLine().Trim();
 
                     switch (optionOneChoice)
                     {
@@ -976,7 +976,7 @@
             Console.WriteLine("9. Display Daily Airline Fee");
             Console.WriteLine("0. Exit");
             Console.Write("Please select your option: ");
-            string userOption = Console.ReadLine();
+            string userOption = Console.ReadLine().Trim();
 
             return userOption;
         }
